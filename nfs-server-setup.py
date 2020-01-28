@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 import re
+import os
 
 ## Function to validate read status of share.
 def read():
@@ -44,6 +45,10 @@ def yes_or_no(question):
     else:
         return False
 
+## Function to install NFS server
+def install_server():  
+    os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
+
 reply = ' '
 question = yes_or_no('Do you want to setup an NFS server? ')
 if reply == '0':
@@ -52,6 +57,7 @@ if reply == '0':
 
 ip = ' '
 print("Installing Server")
+install_server()
 reply = ' '
 question = yes_or_no('Do you want Restrict what IPs can access the Server? ')
 if reply != '0':
@@ -69,5 +75,5 @@ if reply == '0':
 
 print('Now setting up share for automounts')
 read()
-print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("exports", "a"))
+print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("/etc/exports", "a"))
 print('Share for automounts complete')
