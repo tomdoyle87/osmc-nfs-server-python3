@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sys
 import re
+
+## Function to validate read status of share.
 def read():
     global st
     st = ' '
@@ -13,6 +15,7 @@ def read():
 ## IP Validation regex. 
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 
+## Function to validate IPs and networks.
 def check(Ip):  
   
     global ip
@@ -23,6 +26,7 @@ def check(Ip):
         print("Invalid Ip address, please try again")
         ip ='0'
 
+## Function to validate yes no input.
 def yes_or_no(question):
     global reply
     answer = input(question + "(yes/no): ").lower().strip()
@@ -65,5 +69,5 @@ if reply == '0':
 
 print('Now setting up share for automounts')
 read()
-print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("/etc/exports", "a"))
+print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("exports", "a"))
 print('Share for automounts complete')
