@@ -63,4 +63,7 @@ if reply == '0':
     print("Not restricting IP")
     Ip = '?'
 
-print(Ip)
+print('Now setting up share for automounts')
+read()
+print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("/etc/exports", "a"))
+print('Share for automounts complete')
