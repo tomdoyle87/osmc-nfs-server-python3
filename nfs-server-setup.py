@@ -16,7 +16,6 @@ regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(
 def check(Ip):  
   
     global ip
-    global ip
     if(re.search(regex, Ip)):  
         print("Valid Ip address")  
         ip = '1'  
