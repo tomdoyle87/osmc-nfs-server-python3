@@ -2,6 +2,7 @@
 import sys
 import re
 import os
+import shutil
 
 ## Function to validate read status of share.
 def read():
@@ -48,6 +49,7 @@ def yes_or_no(question):
 ## Function to install NFS server
 def install_server():  
     os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
+    shutil.copy('/etc/exports', '/etc/exports.bak')
 
 reply = ' '
 question = yes_or_no("Do you want to setup an NFS server? ")
