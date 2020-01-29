@@ -50,7 +50,7 @@ def install_server():
     os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
 
 reply = ' '
-question = yes_or_no('Do you want to setup an NFS server? ')
+question = yes_or_no("Do you want to setup an NFS server? ")
 if reply == '0':
    print("Exiting Setup")
    sys.exit()
@@ -59,10 +59,10 @@ ip = ' '
 print("Installing Server")
 install_server()
 reply = ' '
-question = yes_or_no('Do you want Restrict what IPs can access the Server? ')
+question = yes_or_no("Do you want Restrict what IPs can access the Server? ")
 if reply != '0':
     while ip !='1':
-         Ip = input ('Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ')
+         Ip = input ("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
          check(Ip)
          if ip == '1':
              break
@@ -73,7 +73,27 @@ if reply == '0':
     print("Not restricting IP")
     Ip = '?'
 
-print('Now setting up share for automounts')
+print("Now setting up share for automounts")
 read()
 print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("/etc/exports", "a"))
-print('Share for automounts complete')
+print("Share for automounts complete")
+
+reply = ' '
+while reply != '0':
+    question = yes_or_no("Do you wish to setup any additional shares e.g. /home/osmc/share ")
+    if reply != '0':
+        share = input("Please enter share path? ")
+        while not os.path.isabs(share):
+            share = input("Please try again, needs to be a absolute path ")
+            os.path.isabs(share)
+        if not os.path.exists(share):
+             os.makedirs(share)
+        read()
+        print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("exports", "a"))
+    if reply == '0':
+        print ("No additional share to added")
+        break
+
+os.system(sudo exportfs -ra)
+print("Listing Shares: ")
+os.system(sudo showmount -e 127.0.0.1)
