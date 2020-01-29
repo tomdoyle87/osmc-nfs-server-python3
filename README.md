@@ -5,8 +5,8 @@ Python3 script for setting up NFS-Server on OSMC, automount shares & manual shar
 Install:
 
 OSMC Stretch:
-          <p>sudo python3 omsc-nfs-server-python3</p>
+          <p>sudo python3 nfs-server-setup.py</p>
           
 OSMC Buster:
-          <p>sudo python omsc-nfs-server-python3</p>
+          <p>sudo python nfs-server-setup.py</p>
    
