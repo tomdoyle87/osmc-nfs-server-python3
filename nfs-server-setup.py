@@ -75,7 +75,7 @@ if reply == '0':
 
 print("Now setting up share for automounts")
 read()
-print('/media/ ' + Ip + '(' + st + 'sync,no_root_squash)', file=open("/etc/exports", "a"))
+print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
 print("Share for automounts complete")
 
 reply = ' '
@@ -89,11 +89,14 @@ while reply != '0':
         if not os.path.exists(share):
              os.makedirs(share)
         read()
-        print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("exports", "a"))
+        print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
     if reply == '0':
         print ("No additional share to added")
         break
 
-os.system(sudo exportfs -ra)
+exportfs = '/usr/sbin/exportfs -ra'
+os.system(exportfs)
 print("Listing Shares: ")
-os.system(sudo showmount -e 127.0.0.1)
+showmount = '/sbin/showmount -e 127.0.0.1'
+os.system(showmount)
+print("Server setup completed")
