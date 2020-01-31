@@ -16,17 +16,17 @@ def read():
             break
         else:
             print("Invalid input, please try again?.")
-## IP Validation regex. 
+## IP Validation regex.
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 
 ## Function to validate IPs and networks.
-def check(Ip):  
-  
+def check(Ip):
+
     global ip
-    if(re.search(regex, Ip)):  
-        print("Valid Ip address")  
-        ip = '1'  
-    else:  
+    if(re.search(regex, Ip)):
+        print("Valid Ip address")
+        ip = '1'
+    else:
         print("Invalid Ip address, please try again")
         ip ='0'
 
@@ -37,7 +37,7 @@ def yes_or_no(question):
     while answer not in ["yes", "y", "no", "n"]:
         if answer is not None:
             print("Input yes or no")
-        answer = input(f"{question} (yes/no): ").lower().strip()
+        answer = input(question + "(yes/no): ").lower().strip()
     if answer[0] == "y":
         return True
     if answer[0] == "n":
@@ -71,14 +71,12 @@ else:
     print("Not restricting IP")
     Ip = '?'
 
-default_options = ["sync", "no_root_squash"]
 print("Now setting up share for automounts")
 read()
-line_to_add = f"/media/ {Ip}({st},{','.join(default_options)})"
 if dry_run:
-    print(line_to_add)
+    print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)')
 else:
-    print(line_to_add, file=open("/etc/exports", "a"))
+    print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
 print("Share for automounts complete")
 
 while True:
@@ -88,15 +86,14 @@ while True:
             share = input("Please try again, needs to be a absolute path ")
             os.path.isabs(share)
         if not os.path.exists(share):
-            print(f"Creating mountpoint: {share}")
+            print("Creating mountpoint")
             if not dry_run:
                 os.makedirs(share)
         read()
-        line_to_add = f"{share} {Ip}({st},{','.join(default_options)})"
         if dry_run:
-            print(f"Adding: {line_to_add}")
+            print(share,Ip + '(' + st + ',sync,no_root_squash)')
         else:
-            print(line_to_add, file=open("/etc/exports", "a"))
+            print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
     else:
         print("No additional share to added")
         break
