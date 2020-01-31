@@ -19,17 +19,14 @@ def read():
 ## IP Validation regex.
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 
-## Function to validate IPs and networks.
 def check(Ip):
-
-    global ip
+    '''Function to validate IP'''
     if(re.search(regex, Ip)):
         print("Valid Ip address")
-        ip = '1'
+        return True
     else:
         print("Invalid Ip address, please try again")
-        ip ='0'
-
+        return False
 
 def yes_or_no(question):
     '''Function to validate yes no input.'''
@@ -56,17 +53,12 @@ if not yes_or_no("Do you want to setup an NFS server?"):
     print("Exiting Setup")
     sys.exit()
 
-ip = ' '
+Ip=' '
 print("Installing Server")
 install_server()
 if yes_or_no("Do you want Restrict what IPs can access the Server?"):
-    while ip != '1':
+    while not check(Ip):
         Ip = input("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
-        check(Ip)
-        if ip == '1':
-            break
-        if ip == '0':
-            continue
 else:
     print("Not restricting IP")
     Ip = '?'
@@ -102,6 +94,7 @@ if not dry_run:
     exportfs = '/usr/sbin/exportfs -ra'
     os.system(exportfs)
 print("Listing Shares: ")
-showmount = '/sbin/showmount -e 127.0.0.1'
-os.system(showmount)
+if not dry_run:
+    showmount = '/sbin/showmount -e 127.0.0.1'
+    os.system(showmount)
 print("Server setup completed")
