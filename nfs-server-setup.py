@@ -4,6 +4,8 @@ import re
 import os
 import shutil
 
+dry_run = True  # Set to true to not make changes for testing
+
 ## Function to validate read status of share.
 def read():
     global st
@@ -28,76 +30,80 @@ def check(Ip):
         print("Invalid Ip address, please try again")
         ip ='0'
 
-## Function to validate yes no input.
+
 def yes_or_no(question):
-    global reply
-    answer = input(question + "(yes/no): ").lower().strip()
-    print("")
-    while not(answer == "y" or answer == "yes" or \
-    answer == "n" or answer == "no"):
-        print("Input yes or no")
-        answer = input(question + "(yes/no):").lower().strip()
-        print("")
+    '''Function to validate yes no input.'''
+    answer = None
+    while answer not in ["yes", "y", "no", "n"]:
+        if answer is not None:
+            print("Input yes or no")
+        answer = input(f"{question} (yes/no): ").lower().strip()
     if answer[0] == "y":
         return True
-        reply = '1'
     if answer[0] == "n":
-        reply = '0'
-    else:
         return False
 
 ## Function to install NFS server
-def install_server():  
-    os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
-    shutil.copy('/etc/exports', '/etc/exports.bak')
+def install_server():
+    if dry_run:
+        print("Installing nfs-kernel-server")
+    else:
+        os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
+        shutil.copy('/etc/exports', '/etc/exports.bak')
 
-reply = ' '
-question = yes_or_no("Do you want to setup an NFS server? ")
-if reply == '0':
-   print("Exiting Setup")
-   sys.exit()
+
+if not yes_or_no("Do you want to setup an NFS server?"):
+    print("Exiting Setup")
+    sys.exit()
 
 ip = ' '
 print("Installing Server")
 install_server()
-reply = ' '
-question = yes_or_no("Do you want Restrict what IPs can access the Server? ")
-if reply != '0':
-    while ip !='1':
-         Ip = input ("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
-         check(Ip)
-         if ip == '1':
-             break
-         if ip == '0':
-             continue
-
-if reply == '0':
+if yes_or_no("Do you want Restrict what IPs can access the Server?"):
+    while ip != '1':
+        Ip = input("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
+        check(Ip)
+        if ip == '1':
+            break
+        if ip == '0':
+            continue
+else:
     print("Not restricting IP")
     Ip = '?'
 
+default_options = ["sync", "no_root_squash"]
 print("Now setting up share for automounts")
 read()
-print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
+line_to_add = f"/media/ {Ip}({st},{','.join(default_options)})"
+if dry_run:
+    print(line_to_add)
+else:
+    print(line_to_add, file=open("/etc/exports", "a"))
 print("Share for automounts complete")
 
-reply = ' '
-while reply != '0':
-    question = yes_or_no("Do you wish to setup any additional shares e.g. /home/osmc/share ")
-    if reply != '0':
+while True:
+    if yes_or_no("Do you wish to setup any additional shares e.g. /home/osmc/share"):
         share = input("Please enter share path? ")
         while not os.path.isabs(share):
             share = input("Please try again, needs to be a absolute path ")
             os.path.isabs(share)
         if not os.path.exists(share):
-             os.makedirs(share)
+            print(f"Creating mountpoint: {share}")
+            if not dry_run:
+                os.makedirs(share)
         read()
-        print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
-    if reply == '0':
-        print ("No additional share to added")
+        line_to_add = f"{share} {Ip}({st},{','.join(default_options)})"
+        if dry_run:
+            print(f"Adding: {line_to_add}")
+        else:
+            print(line_to_add, file=open("/etc/exports", "a"))
+    else:
+        print("No additional share to added")
         break
 
-exportfs = '/usr/sbin/exportfs -ra'
-os.system(exportfs)
+if not dry_run:
+    exportfs = '/usr/sbin/exportfs -ra'
+    os.system(exportfs)
 print("Listing Shares: ")
 showmount = '/sbin/showmount -e 127.0.0.1'
 os.system(showmount)
