@@ -3,7 +3,14 @@ import sys
 import os
 import shutil
 
-dry_run = True  # Set to true to not make changes for testing
+try:
+    if sys.argv[1] in ['--dry-run', '-d', '--d']:
+        dry_run = True
+        print("Running dry_run, no changes will be written.")
+    else:
+        dry_run = False
+except IndexError:
+    dry_run = False
 
 def yes_or_no(question):
     '''Function to validate yes no input.'''
