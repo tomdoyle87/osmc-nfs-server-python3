@@ -6,16 +6,17 @@ import shutil
 
 dry_run = True  # Set to true to not make changes for testing
 
-## Function to validate read status of share.
-def read():
-    global st
+def ro_or_rw(question):
+    '''Function to validate ro rw input.'''
     st = ' '
     while st != 'ro' or st != 'rw':
         st = input("Does the share need to be read only or read write (ro/rw):")
         if st == 'ro' or st == 'rw':
+            return st
             break
         else:
             print("Invalid input, please try again?.")
+
 ## IP Validation regex.
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 
@@ -23,10 +24,12 @@ def check(Ip):
     '''Function to validate IP'''
     if(re.search(regex, Ip)):
         print("Valid Ip address")
-        return True
+        ip = '1'
+        return ip
     else:
         print("Invalid Ip address, please try again")
-        return False
+        ip = '0'
+        return ip
 
 def yes_or_no(question):
     '''Function to validate yes no input.'''
@@ -40,8 +43,8 @@ def yes_or_no(question):
     if answer[0] == "n":
         return False
 
-## Function to install NFS server
 def install_server():
+    '''Function to install nfs server.'''
     if dry_run:
         print("Installing nfs-kernel-server")
     else:
@@ -53,18 +56,24 @@ if not yes_or_no("Do you want to setup an NFS server?"):
     print("Exiting Setup")
     sys.exit()
 
-Ip=' '
-print("Installing Server")
 install_server()
+
+ip= ' '
 if yes_or_no("Do you want Restrict what IPs can access the Server?"):
-    while not check(Ip):
+    while ip !=  '1':
         Ip = input("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
+        ip = check(Ip)
+        if ip == '1':
+            break
+        if ip == '0':
+            continue
 else:
     print("Not restricting IP")
     Ip = '?'
 
 print("Now setting up share for automounts")
-read()
+st = ro_or_rw("Should the share be read/write or read only? ")
+
 if dry_run:
     print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)')
 else:
@@ -81,7 +90,7 @@ while True:
             print("Creating mountpoint")
             if not dry_run:
                 os.makedirs(share)
-        read()
+        st = ro_or_rw("Should the share be read/write or read only? ")
         if dry_run:
             print(share,Ip + '(' + st + ',sync,no_root_squash)')
         else:
