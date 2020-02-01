@@ -4,12 +4,17 @@ import re
 import os
 import shutil
 
-dry_run = True  # Set to true to not make changes for testing
+if sys.argv[1] in ['--dry-run', '-d', '--d']:
+    dry_run = True
+    print("Running dry_run, no changes will be written.")
+else:
+    dry_run = False
+
 
 def ro_or_rw(question):
     '''Function to validate ro rw input.'''
     answer = None
-    while answer not in ["ro", "rw",]:
+    while answer not in ["ro", "rw"]:
         if answer is not None:
             print("Input ro or rw")
         answer = input(question + "(ro/rw): ").lower().strip()
