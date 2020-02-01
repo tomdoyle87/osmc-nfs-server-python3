@@ -25,10 +25,10 @@ def yes_or_no(question):
         return False
 
 def uninstall_server(): 
-     '''Function to uninstall nfs server.'''
-     if dry_run:
+    '''Function to uninstall nfs server.'''
+    if dry_run:
         print("Uninstalling nfs-kernel-server")
-     else:
+    else:
         print("Uninstalling nfs-kernel-server")
         os.system('sudo apt-get remove -y nfs-kernel-server')
         os.remove("/etc/exports")
