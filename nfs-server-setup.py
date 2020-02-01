@@ -3,6 +3,7 @@ import sys
 import re
 import os
 import shutil
+import ipaddress
 
 if sys.argv[1] in ['--dry-run', '-d', '--d']:
     dry_run = True
@@ -20,20 +21,21 @@ def ro_or_rw(question):
         answer = input(question + "(ro/rw): ").lower().strip()
     return answer
 
-# IP Validation regex.
-regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
-
 
 def check(Ip):
     '''Function to validate IP'''
     if Ip is None:
         return False
-    if(re.search(regex, Ip)):
-        print("Valid Ip address")
-        return True
-    else:
-        print("Invalid Ip address, please try again")
+    try:
+        ipaddress.IPv4Network(Ip)
+    except ipaddress.AddressValueError as e:
+        print("Bad IP address:", e)
         return False
+    except ValueError as e:
+        print("Bad network:", e)
+        return False
+
+    return True
 
 
 def yes_or_no(question):
@@ -69,7 +71,7 @@ if yes_or_no("Do you want Restrict what IPs can access the Server?"):
     Ip = None
     while not check(Ip):
         Ip = input("Please enter an IP network, " +
-                   "for example 192.168.0.1/24. " +
+                   "for example 192.168.1.0/24. " +
                    "Or A single host, e.g. 192.168.1.15 ")
 else:
     print("Not restricting IP")
