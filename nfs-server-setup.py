@@ -8,14 +8,17 @@ dry_run = True  # Set to true to not make changes for testing
 
 def ro_or_rw(question):
     '''Function to validate ro rw input.'''
-    st = ' '
-    while st != 'ro' or st != 'rw':
-        st = input("Does the share need to be read only or read write (ro/rw):")
-        if st == 'ro' or st == 'rw':
-            return st
-            break
-        else:
-            print("Invalid input, please try again?.")
+    answer = None
+    while answer not in ["ro", "rw",]:
+        if answer is not None:
+            print("Input ro or rw")
+        answer = input(question + "(ro/rw): ").lower().strip()
+    if answer[0] == "y":
+        return True
+    if answer[0] == "n":
+        return False
+    st = answer
+    return st
 
 ## IP Validation regex.
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
