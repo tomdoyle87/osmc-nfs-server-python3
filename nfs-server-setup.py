@@ -4,10 +4,13 @@ import re
 import os
 import shutil
 
-if sys.argv[1] in ['--dry-run', '-d', '--d']:
-    dry_run = True
-    print("Running dry_run, no changes will be written.")
-else:
+try:
+    if sys.argv[1] in ['--dry-run', '-d', '--d']:
+        dry_run = True
+        print("Running dry_run, no changes will be written.")
+    else:
+        dry_run = False
+except IndexError:
     dry_run = False
 
 
