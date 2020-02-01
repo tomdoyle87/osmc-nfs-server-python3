@@ -20,19 +20,21 @@ def ro_or_rw(question):
         answer = input(question + "(ro/rw): ").lower().strip()
     return answer
 
-## IP Validation regex.
+# IP Validation regex.
 regex = "^(?=\d+\.\d+\.\d+\.\d+($|\/))(([1-9]?\d|1\d\d|2[0-4]\d|25[0-5])\.?){4}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
+
 
 def check(Ip):
     '''Function to validate IP'''
+    if Ip is None:
+        return False
     if(re.search(regex, Ip)):
         print("Valid Ip address")
-        ip = '1'
-        return ip
+        return True
     else:
         print("Invalid Ip address, please try again")
-        ip = '0'
-        return ip
+        return False
+
 
 def yes_or_no(question):
     '''Function to validate yes no input.'''
@@ -46,12 +48,14 @@ def yes_or_no(question):
     if answer[0] == "n":
         return False
 
+
 def install_server():
     '''Function to install nfs server.'''
     if dry_run:
         print("Installing nfs-kernel-server")
     else:
-        os.system('sudo apt-get update' and 'sudo apt-get install -y nfs-kernel-server')
+        os.system('sudo apt-get update' and
+                  'sudo apt-get install -y nfs-kernel-server')
         shutil.copy('/etc/exports', '/etc/exports.bak')
 
 
@@ -61,18 +65,15 @@ if not yes_or_no("Do you want to setup an NFS server?"):
 
 install_server()
 
-ip= ' '
 if yes_or_no("Do you want Restrict what IPs can access the Server?"):
-    while ip !=  '1':
-        Ip = input("Please enter an IP network, for example 192.168.0.1/24. Or A single host, e.g. 192.168.1.15 ")
-        ip = check(Ip)
-        if ip == '1':
-            break
-        if ip == '0':
-            continue
+    Ip = None
+    while not check(Ip):
+        Ip = input("Please enter an IP network, " +
+                   "for example 192.168.0.1/24. " +
+                   "Or A single host, e.g. 192.168.1.15 ")
 else:
     print("Not restricting IP")
-    Ip = '?'
+    Ip = '*'
 
 print("Now setting up share for automounts")
 st = ro_or_rw("Should the share be read/write or read only? ")
@@ -80,11 +81,13 @@ st = ro_or_rw("Should the share be read/write or read only? ")
 if dry_run:
     print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)')
 else:
-    print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
+    print('/media/ ' + Ip + '(' +
+          st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
 print("Share for automounts complete")
 
 while True:
-    if yes_or_no("Do you wish to setup any additional shares e.g. /home/osmc/share"):
+    if yes_or_no("Do you wish to setup any additional shares " +
+                 "e.g. /home/osmc/share"):
         share = input("Please enter share path? ")
         while not os.path.isabs(share):
             share = input("Please try again, needs to be a absolute path ")
@@ -95,9 +98,10 @@ while True:
                 os.makedirs(share)
         st = ro_or_rw("Should the share be read/write or read only? ")
         if dry_run:
-            print(share,Ip + '(' + st + ',sync,no_root_squash)')
+            print(share, Ip + '(' + st + ',sync,no_root_squash)')
         else:
-            print(share,Ip + '(' + st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
+            print(share, Ip + '(' + st + ',sync,no_root_squash)',
+                  file=open("/etc/exports", "a"))
     else:
         print("No additional share to added")
         break
