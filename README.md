@@ -1,4 +1,4 @@
-# omsc-nfs-server-python3
+# osmc-nfs-server-python3
 
 Python3 script for setting up NFS-Server on OSMC, automount shares & manual shares. 
 
