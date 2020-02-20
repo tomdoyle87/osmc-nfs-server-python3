@@ -35,7 +35,7 @@ def uninstall_server():
         shutil.copy('/etc/exports.bak', '/etc/exports')
         os.remove("/etc/exports.bak")
 
-if not yes_or_no("Do you want to setup an NFS server?"):
+if not yes_or_no("Do you want to uninstall the NFS server?"):
     print("Exiting Setup")
     sys.exit()
 
