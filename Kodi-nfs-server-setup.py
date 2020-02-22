@@ -5,9 +5,9 @@ import sys
 import os
 import shutil
 import ipaddress
+import subprocess
 
-dry_run = True
-
+dry_run = False
 
 def check(Ip):
     '''Function to validate IP'''
@@ -29,14 +29,17 @@ def check(Ip):
 def install_server():
     '''Function to install nfs server.'''
     line1 = "Installing nfs-kernel-server"
+    source = "/etc/exports"
+    dest = "/etc/exports.bak"
     if dry_run:
         xbmcgui.Dialog().ok('kodi',line1)
     else:
         xbmcgui.Dialog().ok('kodi',line1)
         os.system('sudo apt-get update' and 
                   'sudo apt-get install -y nfs-kernel-server')
-        shutil.copy('/etc/exports', '/etc/exports.bak')
+        shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
 		
+
 dialog = xbmcgui.Dialog()
 if not dialog.yesno('Kodi', 'Do you want to setup an NFS server?'):
     bye="Exiting Setup"
@@ -70,8 +73,11 @@ if dry_run:
     xbmcgui.Dialog().ok('kodi',line1)
 else:
     xbmcgui.Dialog().ok('kodi',line1)
+    source = "/home/osmc/exports"
+    dest = "/etc/exports"
     print('/media/ ' + Ip + '(' +
-          st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
+          st + ',sync,no_root_squash)', file=open("/home/osmc/exports", "a"))
+    shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
 
 line1 = "Share for automounts complete"
 xbmcgui.Dialog().ok('kodi',line1)
@@ -86,7 +92,10 @@ while True:
             line1 = "Creating mountpoint"
             xbmcgui.Dialog().ok('kodi',line1)
             if not dry_run:
-                os.makedirs(share)
+                #os.makedirs(share)
+                os.environ['share'] = share
+                command = [". /home/osmc/.kodi/create-dir.sh" ]
+                subprocess.call(command, shell=True)
                 line1 = "Creating mountpoint"
                 xbmcgui.Dialog().ok('kodi',line1)
         if dialog.yesno('Kodi', 'Should the share be read only (If not sure, select Yes)?'):
@@ -97,20 +106,22 @@ while True:
             line1 = "Setting up additonal shares as requested"
             xbmcgui.Dialog().ok('kodi',line1)            
         else:
+            source = "/home/osmc/exports"
+            dest = "/etc/exports"
             line1 = "Setting up additonal shares as requested"
-            xbmcgui.Dialog().ok('kodi',line1) 
-            print(share, Ip + '(' + st + ',sync,no_root_squash)',
-                  file=open("/etc/exports", "a"))
+            xbmcgui.Dialog().ok('kodi',line1)
+            print(share, Ip + '(' + st + ',sync,no_root_squash)',file=open("/home/osmc/exports", "a"))
+            shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
+
     else:
         line1 = "No additional share to added"
         xbmcgui.Dialog().ok('kodi',line1)
         break
 if not dry_run:
-    exportfs = '/usr/sbin/exportfs -ra'
+    exportfs = 'sudo /usr/sbin/exportfs -ra'
     os.system(exportfs)
-print("Listing Shares: ")
-if not dry_run:
-    showmount = '/sbin/showmount -e 127.0.0.1'
-    os.system(showmount)
+    source = "/home/osmc/exports"
+    os.remove(source)
+
 line1 = "Server setup completed"
 xbmcgui.Dialog().ok('kodi',line1)
