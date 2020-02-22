@@ -7,7 +7,7 @@ import shutil
 import ipaddress
 import subprocess
 
-dry_run = True
+dry_run = False
 
 def check(Ip):
     '''Function to validate IP'''
@@ -79,9 +79,6 @@ else:
           st + ',sync,no_root_squash)', file=open("/home/osmc/exports", "a"))
     shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
 
-line1 = "Share for automounts complete"
-xbmcgui.Dialog().ok('kodi',line1)
-
 while True:
     if dialog.yesno('Kodi', 'Do you wish to setup any additional shares, e.g. /home/osmc/share'):
         share = dialog.input('Please enter a share path?', type=xbmcgui.INPUT_ALPHANUM)
@@ -92,12 +89,10 @@ while True:
             line1 = "Creating mountpoint"
             xbmcgui.Dialog().ok('kodi',line1)
             if not dry_run:
-                #os.makedirs(share)
                 os.environ['share'] = share
                 command = [". /home/osmc/.kodi/create-dir.sh" ]
                 subprocess.call(command, shell=True)
-                line1 = "Creating mountpoint"
-                xbmcgui.Dialog().ok('kodi',line1)
+                #xbmcgui.Dialog().ok('kodi',line1)
         if dialog.yesno('Kodi', 'Should the share be read only (If not sure, select Yes)?'):
             st = "ro"
         else:
@@ -121,7 +116,7 @@ if not dry_run:
     exportfs = 'sudo /usr/sbin/exportfs -ra'
     os.system(exportfs)
     source = "/home/osmc/exports"
-    os.remove(source)
+    os.remove(source) 
 
 line1 = "Server setup completed"
 xbmcgui.Dialog().ok('kodi',line1)
