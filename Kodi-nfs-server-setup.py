@@ -92,7 +92,6 @@ while True:
                 os.environ['share'] = share
                 command = [". /home/osmc/.kodi/create-dir.sh" ]
                 subprocess.call(command, shell=True)
-                #xbmcgui.Dialog().ok('kodi',line1)
         if dialog.yesno('Kodi', 'Should the share be read only (If not sure, select Yes)?'):
             st = "ro"
         else:
