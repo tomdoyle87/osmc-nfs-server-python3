@@ -7,7 +7,7 @@ import shutil
 import ipaddress
 import subprocess
 
-dry_run = False
+dry_run = True
 
 def check(Ip):
     '''Function to validate IP'''
