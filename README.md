@@ -27,5 +27,5 @@ Uninstall script removes server and reverts /etc/exports to default.
 
 Kodi18-nfs-server-setup.py, Kodi19-nfs-server-setup.py install scripts & uninversal uninstall script: Kodi-uninstall-nfs-server.py
 
-To Run on kodi need issue the following command via the commandline: 
+To Run on Kodi 18 need issue the following command via the commandline: 
           sudo apt-get -y install python-pip && pip install ipaddress
