@@ -51,7 +51,6 @@ install_server()
 dialog = xbmcgui.Dialog()
 if dialog.yesno('Kodi', 'Do you want Restrict what IPs can access the Server?'):
     Ip = None
-    locale = "UTF-8"
     while not check(Ip):
         dialog = xbmcgui.Dialog()
         Ip = dialog.input('Please enter an IP network', type=xbmcgui.INPUT_ALPHANUM).decode('utf-8')
