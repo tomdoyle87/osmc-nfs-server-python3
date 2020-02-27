@@ -25,4 +25,4 @@ OSMC Buster:
           
 Uninstall script removes server and reverts /etc/exports to default. 
 
-Kodi-nfs-server-setup.py & Kodi-uninstall-nfs-server.py - Only Tested with dryrun, **not recommended** for use yet.
+Kodi18-nfs-server-setup.py, Kodi19-nfs-server-setup.py install scripts & uninversal uninstall script: Kodi-uninstall-nfs-server.py
