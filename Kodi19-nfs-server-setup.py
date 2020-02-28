@@ -5,7 +5,6 @@ import sys
 import os
 import shutil
 import ipaddress
-import subprocess
 
 dry_run = True
 
@@ -90,8 +89,7 @@ while True:
             xbmcgui.Dialog().ok('kodi',line1)
             if not dry_run:
                 os.environ['share'] = share
-                command = [". /home/osmc/.kodi/create-dir.sh" ]
-                subprocess.call(command, shell=True)
+                os.system('/bin/bash -c "sudo mkdir $share"')
         if dialog.yesno('Kodi', 'Should the share be read only (If not sure, select Yes)?'):
             st = "ro"
         else:
