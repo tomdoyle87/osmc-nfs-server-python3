@@ -51,6 +51,7 @@ dialog = xbmcgui.Dialog()
 if dialog.yesno('Kodi', 'Do you want Restrict what IPs can access the Server?'):
     Ip = None
     while not check(Ip):
+        dialog = xbmcgui.Dialog()
         if sys.version_info[0] < 3:
             Ip = dialog.input('Please enter an IP network', type=xbmcgui.INPUT_ALPHANUM).decode('utf-8')
         else:                    
