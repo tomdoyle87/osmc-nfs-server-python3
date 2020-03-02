@@ -83,10 +83,10 @@ print("Now setting up share for automounts")
 st = ro_or_rw("Should the share be read/write or read only? ")
 
 if dry_run:
-    print('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)')
+    print('/media/ ' + Ip + '(' + st + ',sync,crossmnt,no_root_squash)')
 else:
     print('/media/ ' + Ip + '(' +
-          st + ',sync,no_root_squash)', file=open("/etc/exports", "a"))
+          st + ',sync,crossmnt,no_root_squash)', file=open("/etc/exports", "a"))
 print("Share for automounts complete")
 
 while True:
@@ -102,9 +102,9 @@ while True:
                 os.makedirs(share)
         st = ro_or_rw("Should the share be read/write or read only? ")
         if dry_run:
-            print(share, Ip + '(' + st + ',sync,no_root_squash)')
+            print(share, Ip + '(' + st + ',sync,crossmnt,no_root_squash)')
         else:
-            print(share, Ip + '(' + st + ',sync,no_root_squash)',
+            print(share, Ip + '(' + st + ',sync,crossmnt,no_root_squash)',
                   file=open("/etc/exports", "a"))
     else:
         print("No additional share to added")
