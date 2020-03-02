@@ -21,6 +21,7 @@ def uninstall_server():
         os.system("sudo rm /etc/exports")
         shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
         os.system("sudo rm /etc/exports.bak")
+        os.system('/bin/bash -c "sudo systemctl restart nfs-kernel-server"')
         line1 = "Uninstall Complete"
         xbmcgui.Dialog().ok('kodi',line1)
 
