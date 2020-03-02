@@ -58,8 +58,8 @@ if dialog.yesno('Kodi', 'Do you want Restrict what IPs can access the Server?'):
             Ip = dialog.input('Please enter an IP network', type=xbmcgui.INPUT_ALPHANUM)
                    
 else:
-    wildcard = "Not restricting IP"
-    xbmcgui.Dialog().ok('kodi',wildcard)
+    line1 = "Not restricting IP"
+    xbmcgui.Dialog().ok('kodi',line1)
     Ip = '*'
 	
 line1 = "Now setting up share for automounts"
@@ -75,12 +75,10 @@ if dry_run:
     xbmcgui.Dialog().ok('kodi',line1)
 else:
     xbmcgui.Dialog().ok('kodi',line1)
-    source = "/home/osmc/exports"
-    dest = "/etc/exports"
-    f = open('/home/osmc/exports', 'w+')
-    f.write('/media/ ' + Ip + '(' + st + ',sync,no_root_squash)')                    
-    f.close() 
-    shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
+    nfsdefaults = ",sync,crossmnt,no_root_squash"
+    share = "/media/" + " " + Ip + "\(" + st + nfsdefaults + "\)"
+    os.environ['share'] = share
+    os.system('/bin/bash -c "echo $share | sudo tee -a /etc/exports"')
 
 while True:
     if dialog.yesno('Kodi', 'Do you wish to setup any additional shares, e.g. /home/osmc/share'):
@@ -102,24 +100,22 @@ while True:
             line1 = "Setting up additonal shares as requested"
             xbmcgui.Dialog().ok('kodi',line1)            
         else:
-            source = "/home/osmc/exports"
-            dest = "/etc/exports"
             line1 = "Setting up additonal shares as requested"
             xbmcgui.Dialog().ok('kodi',line1)
-            f = open('/home/osmc/exports', 'a+')
-            f.write('\n' + share + ' ' + Ip + '(' + st + ',sync,no_root_squash)')
-            f.close()
-            shutil.os.system('sudo cp "{}" "{}"'.format(source,dest))
+            nfsdefaults = ",sync,crossmnt,no_root_squash"
+            share2 = share + " " + Ip + "\(" + st + nfsdefaults + "\)"
+            os.environ['share'] = share2
+            os.system('/bin/bash -c "echo $share | sudo tee -a /etc/exports"')
 
     else:
-        line1 = "No additional share to added"
+        line1 = "No additional share to add"
         xbmcgui.Dialog().ok('kodi',line1)
         break
+
 if not dry_run:
+    os.system('/bin/bash -c "sudo systemctl restart nfs-kernel-server"')
     exportfs = 'sudo /usr/sbin/exportfs -ra'
     os.system(exportfs)
-    source = "/home/osmc/exports"
-    os.remove(source) 
 
 line1 = "Server setup completed"
 xbmcgui.Dialog().ok('kodi',line1)
