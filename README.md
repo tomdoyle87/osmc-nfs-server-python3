@@ -25,8 +25,15 @@ OSMC Buster:
           
 Uninstall script removes server and reverts /etc/exports to default. 
 
-Kodi18-nfs-server-setup.py, Kodi19-nfs-server-setup.py install scripts & uninversal uninstall script: Kodi-uninstall-nfs-server.py
+<h3>Kodi Instructions</h3>
 
-To Run on Kodi 18 need issue the following command via the commandline:
+The easiest way is to map some shortcuts to some keys for example f11 & f12, for example (will need to use the command line):
 
-          sudo apt-get -y install python-pip && pip install ipaddress
+          cd /home/osmc/.kodi/userdata
+          wget https://raw.githubusercontent.com/tomdoyle87/osmc-nfs-server-python3/master/Kodi-nfs-server-setup.py
+          wget https://raw.githubusercontent.com/tomdoyle87/osmc-nfs-server-python3/master/Kodi-uninstall-nfs-server.py
+
+Then add the following to keyboard.xml or remote.xml (in the global section):
+
+          XBMC.RunScript(special://home/Kodi-nfs-server-setup.py)
+          XBMC.RunScript(special://home/Kodi-uninstall-nfs-server.py)
