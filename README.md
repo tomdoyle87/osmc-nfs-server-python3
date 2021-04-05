@@ -35,5 +35,8 @@ The easiest way is to map some shortcuts to some keys for example f11 & f12, for
 
 Then add the following to keyboard.xml or remote.xml (in the global section):
 
-          XBMC.RunScript(special://home/Kodi-nfs-server-setup.py)
-          XBMC.RunScript(special://home/Kodi-uninstall-nfs-server.py)
+          <keyboard>
+                    <F11>XBMC.RunScript(special://home/Kodi-nfs-server-setup.py)</F11>         
+                    <F12>XBMC.RunScript(special://home/Kodi-uninstall-nfs-server.py)</F12>
+          </keyboard>
+
