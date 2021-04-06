@@ -40,3 +40,4 @@ Then add the following to keyboard.xml or remote.xml (in the global section):
                     <F12>XBMC.RunScript(special://home/Kodi-uninstall-nfs-server.py)</F12>
           </keyboard>
 
+Kodi 18 has addtional dependances: sudo apt-get install -y python-pip && pip install ipaddress
