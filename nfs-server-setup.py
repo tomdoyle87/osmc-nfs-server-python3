@@ -21,7 +21,7 @@ def ro_or_rw(question):
         if answer is not None:
             print("Input ro or rw")
         answer = input(question + "(ro/rw): ").lower().strip()
-    return answerc
+    return answer
 
 
 def check(Ip):
